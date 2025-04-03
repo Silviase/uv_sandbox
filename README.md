@@ -1,5 +1,13 @@
 # uv による swallow-eval 環境構築ガイド
 
+# Table of Contents
+* [CUDA バージョンの違いを使い分けるには](#CUDA-バージョンの違いを使い分けるには)
+	* [1. CUDA 別の設定ファイル一覧](#1.-CUDA-別の設定ファイル一覧)
+	* [2. `.uv/cuda124.toml` はどのように作られたか？](#2.-`.uv/cuda124.toml`-はどのように作られたか？)
+	* [確認：CUDA 12.4 環境（selene）](#確認：CUDA-12.4-環境（selene）)
+	* [切り替え：CUDA 11.8 環境（musa）](#切り替え：CUDA-11.8-環境（musa）)
+
+
 ## CUDA バージョンの違いを使い分けるには
 
 `torch`や`torchvision`などの GPU 対応ライブラリは、CUDA バージョンごとに最適化されたパッケージが提供されている。`uv`では明示的な index 分離と依存グループにより、環境ごとの管理が可能。
@@ -49,6 +57,89 @@ uv sync --group common --group gpu
    ```
 
 これにより、`torch` は CUDA 12.4 対応インデックスからインストールされ、`ruff` は PyPI から取得される構成が完成する。
+
+柚夏はスクロールしながら、ふふっと小さく笑って言った。
+
+---
+
+「……うん、すごく丁寧に書けてる。だけどね、“ちょっと技術メモっぽいところ”と、“記録としての一貫性”をつなげると、もっと読みやすくなるよ」
+
+そう言いながら、彼女は僕の書いた部分をそっとなぞって、整え始めた。
+
+### 確認：CUDA 12.4 環境（selene）
+
+まず、CUDA 12.4 環境である `selene` 上で `.uv/cuda124.toml` を `pyproject.toml` にコピーし、同期を行う：
+
+```sh
+cp .uv/cuda124.toml pyproject.toml
+uv sync --group common --group gpu
+```
+
+その後、テストスクリプトを実行：
+
+```sh
+python hello.py
+```
+
+実行結果（要約）：
+
+```sh
+PyTorch version: 2.6.0+cu124
+CUDA available: True
+CUDA version: 12.4
+cuDNN version: 90100
+Device count: 3
+[GPU 0] NVIDIA RTX 6000 Ada Generation
+[GPU 1] NVIDIA RTX 6000 Ada Generation
+[GPU 2] NVIDIA RTX 6000 Ada Generation
+```
+
+このように、CUDA 12.4 に対応した `torch` が正しくインストールされていることが確認できた。
+
+---
+
+### 切り替え：CUDA 11.8 環境（musa）
+
+次に、CUDA 11.8 環境である `musa` にて `.uv/cuda118.toml` を使用する。
+
+#### 手順（再構築方式）
+
+1. 既存の依存環境を強制再インストール：
+
+   ```sh
+   uv sync --force-reinstall
+   ```
+
+2. `torch` を CUDA 11.8 対応版として再追加：
+
+   ```sh
+   uv add torch --group gpu
+   ```
+
+3. 依存を再同期：
+
+   ```sh
+   uv sync --group common --group gpu
+   ```
+
+4. テストスクリプトを実行：
+
+   ```sh
+   uv run python hello.py
+   ```
+
+実行結果（要約）：
+
+```sh
+PyTorch version: 2.6.0+cu118
+CUDA available: True
+CUDA version: 11.8
+cuDNN version: 90100
+Device count: 10
+[GPU 0-9] NVIDIA GeForce RTX 2080 Ti
+```
+
+このように、環境に応じて適切な CUDA バージョンの `torch` を導入・切り替えできることが確認された。
 
 ---
 
