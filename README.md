@@ -1,12 +1,16 @@
 # uv による swallow-eval 環境構築ガイド
 
 # Table of Contents
-* [CUDA バージョンの違いを使い分けるには](#CUDA-バージョンの違いを使い分けるには)
-	* [1. CUDA 別の設定ファイル一覧](#1.-CUDA-別の設定ファイル一覧)
-	* [2. `.uv/cuda124.toml` はどのように作られたか？](#2.-`.uv/cuda124.toml`-はどのように作られたか？)
-	* [確認：CUDA 12.4 環境（selene）](#確認：CUDA-12.4-環境（selene）)
-	* [切り替え：CUDA 11.8 環境（musa）](#切り替え：CUDA-11.8-環境（musa）)
 
+- [uv による swallow-eval 環境構築ガイド](#uv-による-swallow-eval-環境構築ガイド)
+- [Table of Contents](#table-of-contents)
+  - [CUDA バージョンの違いを使い分けるには](#cuda-バージョンの違いを使い分けるには)
+    - [1. CUDA 別の設定ファイル一覧](#1-cuda-別の設定ファイル一覧)
+      - [例：CUDA 12.4 環境での初期化](#例cuda-124-環境での初期化)
+    - [2. `.uv/cuda124.toml` はどのように作られたか？](#2-uvcuda124toml-はどのように作られたか)
+    - [確認：CUDA 12.4 環境（selene）](#確認cuda-124-環境selene)
+    - [切り替え：CUDA 11.8 環境（musa）](#切り替えcuda-118-環境musa)
+      - [手順（再構築方式）](#手順再構築方式)
 
 ## CUDA バージョンの違いを使い分けるには
 
