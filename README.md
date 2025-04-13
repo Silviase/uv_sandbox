@@ -11,6 +11,7 @@
     - [確認：CUDA 12.4 環境（selene）](#確認cuda-124-環境selene)
     - [切り替え：CUDA 11.8 環境（musa）](#切り替えcuda-118-環境musa)
       - [手順（再構築方式）](#手順再構築方式)
+  - [`isolated` オプションによる環境の使い分け](#isolated-オプションによる環境の使い分け)
 
 ## CUDA バージョンの違いを使い分けるには
 
@@ -136,6 +137,33 @@ Device count: 10
 ```
 
 このように、環境に応じて適切な CUDA バージョンの `torch` を導入・切り替えできることが確認された。
+
+---
+
+## `isolated` オプションによる環境の使い分け
+
+`uv run --isolated --extra torch python hello.py` とすると、extra `torch` が持つ依存パッケージのみがインストールされ、一時的な仮想環境が作成される。
+したがって、以下の shell script の実行結果のように、`torch` をインストールした環境では GPU が認識されるが、`vis` をインストールした環境では GPU が認識されない。
+
+```sh
+maeda-k@selene:~/Project/uv_sandbox$ uv run --isolated --extra torch python hello.py
+Installed 39 packages in 4.89s
+PyTorch version: 2.6.0+cu124
+CUDA available: True
+CUDA version: 12.4
+cuDNN version: 90100
+Device count: 3
+[GPU 0] NVIDIA RTX 6000 Ada Generation
+[GPU 1] NVIDIA RTX 6000 Ada Generation
+[GPU 2] NVIDIA RTX 6000 Ada Generation
+
+maeda-k@selene:~/Project/uv_sandbox$ uv run --isolated --extra vis python hello.py
+Installed 121 packages in 1.47s
+Traceback (most recent call last):
+  File "/home/maeda-k/Project/uv_sandbox/hello.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+```
 
 ---
 
