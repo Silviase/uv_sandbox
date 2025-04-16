@@ -145,6 +145,8 @@ Device count: 10
 `uv run --isolated --extra torch python hello.py` とすると、extra `torch` が持つ依存パッケージのみがインストールされ、一時的な仮想環境が作成される。
 したがって、以下の shell script の実行結果のように、`torch` をインストールした環境では GPU が認識されるが、`vis` をインストールした環境では GPU が認識されない。
 
+この実行は、TSUBAME4など、仮想環境を大量に溜め込むことで再現性の不都合が生じ、かつ複数の環境を使い分けたい場合に用いる。
+
 ```sh
 maeda-k@selene:~/Project/uv_sandbox$ uv run --isolated --extra torch python hello.py
 Installed 39 packages in 4.89s
